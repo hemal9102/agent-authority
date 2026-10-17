@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Authority (AA) — Standards-Grounded Agent-Readiness Diagnostic</title>
+  <meta name="description" content="Deterministic 0-100 website agent-readiness evaluation grounded strictly in published IETF RFCs and W3C specifications.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <span class="brand-badge">AA</span>
+        <span class="brand-title">Agent Authority</span>
+        <span class="version-tag">RFC Diagnostic Engine</span>
+      </div>
+      <div class="nav-links">
+        <a href="https://datatracker.ietf.org/doc/draft-shah-agent-readiness-evaluation/" target="_blank" rel="noopener" class="ietf-pill">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          IETF draft-shah-agent-readiness-evaluation-00
+        </a>
+        <a href="https://github.com/hemal9102/agent-authority" target="_blank" rel="noopener" class="github-btn">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+    <!-- Hero / Audit Form -->
+    <section class="hero-section">
+      <div class="hero-badge">Autonomous Retrieval Readiness</div>
+      <h1 class="hero-title">Evaluate How AI Agents Ingest Your Domain</h1>
+      <p class="hero-subtitle">
+        Zero black-box opinions. Deterministic mathematical evaluation grounded strictly in published 
+        <strong>IETF RFCs</strong> and <strong>W3C Specifications</strong>.
+      </p>
+
+      <form id="auditForm" class="audit-input-group">
+        <div class="input-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input 
+            type="text" 
+            id="targetInput" 
+            placeholder="Enter hostname or URL (e.g., tensix.in, ftaglobal.com)..." 
+            autocomplete="off" 
+            required 
+            spellcheck="false"
+          />
+        </div>
+        <button type="submit" id="submitBtn" class="primary-btn">
+          <span class="btn-text">Audit Agent Authority</span>
+          <div class="spinner hidden" id="btnSpinner"></div>
+        </button>
+      </form>
+
+      <!-- Quick samples -->
+      <div class="samples-row">
+        <span class="samples-label">Sample origins:</span>
+        <button type="button" class="sample-pill" data-domain="tensix.in">tensix.in (Agent-Native)</button>
+        <button type="button" class="sample-pill" data-domain="ftaglobal.com">ftaglobal.com</button>
+        <button type="button" class="sample-pill" data-domain="cloudflare.com">cloudflare.com</button>
+        <button type="button" class="sample-pill" data-domain="github.com">github.com</button>
+      </div>
+    </section>
+
+    <!-- Error Banner -->
+    <div id="errorAlert" class="alert-box error hidden">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="errorMessage">Audit scan error occurred.</span>
+    </div>
+
+    <!-- Results Section (Dynamically Populated) -->
+    <section id="resultsSection" class="results-container hidden">
+      
+      <!-- Primary Score Card -->
+      <div class="score-hero-card">
+        <div class="gauge-column">
+          <div class="radial-gauge-container">
+            <svg class="radial-gauge" viewBox="0 0 160 160">
+              <circle class="gauge-bg" cx="80" cy="80" r="70" />
+              <circle class="gauge-fill" id="gaugeProgress" cx="80" cy="80" r="70" />
+            </svg>
+            <div class="gauge-value">
+              <span id="heroScoreValue">0</span>
+              <span class="gauge-max">/100</span>
+            </div>
+          </div>
+          <div class="tier-badge" id="heroTierBadge">Agent-Native</div>
+        </div>
+
+        <div class="summary-column">
+          <div class="target-headline">
+            <span class="protocol-tag" id="resolvedProtocol">HTTPS</span>
+            <h2 id="resolvedHostname" class="target-title">example.com</h2>
+          </div>
+          <p class="target-status-desc" id="targetGradeDesc">Evaluating conformance...</p>
+
+          <div class="meta-stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Time to First Byte</span>
+              <span class="stat-val" id="metaTtfb">-- ms</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">TLS Protocol</span>
+              <span class="stat-val" id="metaTls">--</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Text Density</span>
+              <span class="stat-val" id="metaDensity">-- %</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">JSON-LD Entities</span>
+              <span class="stat-val" id="metaEntities">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Pillars Section -->
+      <div class="pillars-header">
+        <h3>Four Foundational Evaluation Pillars</h3>
+        <p>Grounded in draft-shah-agent-readiness-evaluation-00</p>
+      </div>
+
+      <div class="pillars-grid">
+        <!-- Pillar 1 -->
+        <div class="pillar-card" id="pillar1Card">
+          <div class="pillar-top">
+            <span class="pillar-id">PILLAR 1 &bull; 30%</span>
+            <span class="pillar-score" id="p1Score">0/100</span>
+          </div>
+          <h4>Agent Discoverability</h4>
+          <p class="pillar-desc">RFC 9309 robots policy, RFC 8288 link manifests, RFC 9727 api-catalog, and RFC 8631 service docs.</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="p1Bar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="pillar-card" id="pillar2Card">
+          <div class="pillar-top">
+            <span class="pillar-id">PILLAR 2 &bull; 30%</span>
+            <span class="pillar-score" id="p2Score">0/100</span>
+          </div>
+          <h4>Semantic Entity Grounding</h4>
+          <p class="pillar-desc">W3C JSON-LD 1.1 AST parsing, Schema.org ontology mapping, structural typing, and RFC 3986 sameAs anchors.</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="p2Bar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="pillar-card" id="pillar3Card">
+          <div class="pillar-top">
+            <span class="pillar-id">PILLAR 3 &bull; 25%</span>
+            <span class="pillar-score" id="p3Score">0/100</span>
+          </div>
+          <h4>Content Efficiency & Ingestion</h4>
+          <p class="pillar-desc">RFC 7763 Markdown alternate representations, text-to-markup density, and Content-Signal AI directives.</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="p3Bar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Pillar 4 -->
+        <div class="pillar-card" id="pillar4Card">
+          <div class="pillar-top">
+            <span class="pillar-id">PILLAR 4 &bull; 15%</span>
+            <span class="pillar-score" id="p4Score">0/100</span>
+          </div>
+          <h4>Transport & Edge Caching</h4>
+          <p class="pillar-desc">RFC 8446 TLS 1.3 handshakes (0-RTT/1-RTT), RFC 9111 edge caching validation, and origin TTFB latency.</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="p4Bar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RFC Audit Ledger & Remediation Guide -->
+      <div class="ledger-section">
+        <div class="ledger-header">
+          <div>
+            <h3>Standards Conformance Ledger</h3>
+            <p>Every check corresponds to a strict RFC or W3C clause with exact remediation snippets.</p>
+          </div>
+          <div class="filter-pills" id="ledgerFilters">
+            <button type="button" class="filter-pill active" data-filter="all">All (<span id="countAll">0</span>)</button>
+            <button type="button" class="filter-pill" data-filter="PASS">Conforming (<span id="countPass">0</span>)</button>
+            <button type="button" class="filter-pill" data-filter="WARN">Warnings (<span id="countWarn">0</span>)</button>
+            <button type="button" class="filter-pill" data-filter="FAIL">Failing (<span id="countFail">0</span>)</button>
+          </div>
+        </div>
+
+        <div class="ledger-list" id="ledgerContainer">
+          <!-- Dynamic check cards will be injected here -->
+        </div>
+      </div>
+
+      <!-- Badge Embed Section -->
+      <div class="badge-embed-card">
+        <div class="badge-embed-info">
+          <h3>Display Your Agent Authority Badge</h3>
+          <p>Add a real-time, dynamic SVG shield badge to your documentation, repository README, or footer.</p>
+          <div class="badge-preview-box">
+            <img id="badgePreviewImg" src="/api/badge/tensix.in" alt="Agent Authority Shield">
+          </div>
+        </div>
+        <div class="badge-code-box">
+          <div class="code-tab-header">
+            <span class="code-lang-label">Markdown</span>
+            <button type="button" class="copy-code-btn" id="copyBadgeBtn">Copy Markdown</button>
+          </div>
+          <pre><code id="badgeMarkdownCode">[![Agent Authority](https://agent-authority.org/api/badge/domain)](https://agent-authority.org)</code></pre>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <strong>Agent Authority (AA)</strong> &bull; Standards-Grounded Agent Readiness Evaluation Engine
+        <div class="footer-sub">Author: H. K. Shah &bull; TENSIX &bull; Reference Implementation</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://datatracker.ietf.org/doc/draft-shah-agent-readiness-evaluation/" target="_blank" rel="noopener">IETF Datatracker</a>
+        <a href="https://github.com/hemal9102/agent-authority" target="_blank" rel="noopener">GitHub Repository</a>
+        <a href="/api/health" target="_blank">Engine Health</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
