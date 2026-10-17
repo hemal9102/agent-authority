@@ -1,0 +1,28 @@
+# Sample fleet for empirical scan — well-known public domains.
+# One hostname per line. This is a small illustrative sample, NOT a
+# statistically representative study; see the documentation for that caveat.
+stripe.com
+github.com
+cloudflare.com
+vercel.com
+anthropic.com
+openai.com
+wikipedia.org
+mozilla.org
+nginx.org
+python.org
+djangoproject.com
+fastapi.tiangolo.com
+news.ycombinator.com
+stackoverflow.com
+shopify.com
+tensix.in
+ftaglobal.com
+nlnet.nl
+ietf.org
+rfc-editor.org
+w3.org
+google.com
+microsoft.com
+apple.com
+amazon.com

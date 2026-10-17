@@ -15,6 +15,109 @@ from bs4 import BeautifulSoup
 
 USER_AGENT = "AgentAuthorityBot/1.0 (+https://github.com/hemal9102/agent-authority; standards-grounded diagnostic)"
 
+# AI retrieval user-agent product tokens evaluated against robots.txt (RFC 9309).
+AI_AGENT_TOKENS = ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended", "CCBot"]
+
+
+def robots_allows(robots_text: str, agent: str, path: str = "/") -> bool:
+    """
+    Evaluate whether `agent` is allowed to fetch `path` under RFC 9309.
+
+    Implements the Robots Exclusion Protocol matching semantics (RFC 9309 Sec.
+    2.2.1 grouping and Sec. 2.2.2 longest-match):
+      * Records are grouped by case-insensitive User-agent product token.
+      * A group whose token exactly matches the agent wins; otherwise the
+        '*' group applies; if neither exists, access is allowed.
+      * Within the applicable group, the Allow/Disallow rule with the longest
+        matching path prefix wins. On an equal-length tie, Allow wins.
+      * '*' wildcards and a trailing '$' end-anchor in rule paths are honored.
+      * An empty Disallow value means "allow everything".
+    Returns True (allowed) or False (disallowed).
+    """
+    if not robots_text:
+        return True
+
+    groups = []            # list of (set_of_agent_tokens_lower, [(is_allow, path)])
+    cur_agents = []
+    cur_rules = []
+    seen_rule_in_group = False
+
+    def flush():
+        nonlocal cur_agents, cur_rules, seen_rule_in_group
+        if cur_agents:
+            groups.append((set(cur_agents), cur_rules))
+        cur_agents, cur_rules, seen_rule_in_group = [], [], False
+
+    for raw in robots_text.splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if not line or ":" not in line:
+            continue
+        field, _, value = line.partition(":")
+        field = field.strip().lower()
+        value = value.strip()
+        if field == "user-agent":
+            # A user-agent line after rules starts a new group.
+            if seen_rule_in_group:
+                flush()
+            cur_agents.append(value.lower())
+        elif field in ("allow", "disallow"):
+            seen_rule_in_group = True
+            cur_rules.append((field == "allow", value))
+        # Other fields (Sitemap, Crawl-delay, etc.) are ignored for matching.
+    flush()
+
+    # Match on the leading product token (RFC 9309 Sec. 2.2.1), case-insensitive,
+    # so a versioned/compound UA string ("GPTBot/1.2") still maps to its group.
+    agent_l = agent.lower().split("/", 1)[0].split()[0] if agent.strip() else ""
+    rules = None
+    for agents, grules in groups:          # exact token match first
+        if agent_l in agents:
+            rules = grules
+            break
+    if rules is None:                      # fall back to the '*' group
+        for agents, grules in groups:
+            if "*" in agents:
+                rules = grules
+                break
+    if rules is None:                      # no applicable group => allowed
+        return True
+
+    def _canon(s: str) -> str:
+        """Canonicalize percent-escapes of UNRESERVED octets (RFC 9309 Sec.
+        2.2.2 / RFC 3986): decode only %XX for ALPHA/DIGIT/-/./_/~ so that
+        '/%7Ejoe' and '/~joe' compare equal. Reserved octets (e.g. %2F) are
+        left encoded so path structure is preserved."""
+        def repl(m):
+            o = int(m.group(1), 16)
+            c = chr(o)
+            if c.isalnum() or c in "-._~":
+                return c
+            return "%" + m.group(1).upper()
+        return re.sub(r"%([0-9A-Fa-f]{2})", repl, s)
+
+    def rule_matches(pattern: str, target: str):
+        """Return matched length if pattern matches target prefix, else -1.
+        Length is the ORIGINAL pattern length (RFC 9309 counts pattern octets)."""
+        if pattern == "":
+            return -1
+        regex = re.escape(_canon(pattern)).replace(r"\*", ".*")
+        if regex.endswith(r"\$"):
+            regex = regex[:-2] + "$"
+        return len(pattern) if re.match(regex, _canon(target)) else -1
+
+    best_len = -1
+    best_allow = True
+    for is_allow, pattern in rules:
+        if pattern == "" and not is_allow:
+            # "Disallow:" with empty value explicitly allows everything.
+            if 0 > best_len:
+                best_len, best_allow = 0, True
+            continue
+        mlen = rule_matches(pattern, path)
+        if mlen > best_len or (mlen == best_len and is_allow):
+            best_len, best_allow = mlen, is_allow
+    return best_allow if best_len >= 0 else True
+
 def probe_ssl_handshake(hostname: str, port: int = 443) -> Dict[str, Any]:
     """
     Direct low-level TLS handshake probe using standard library ssl.
@@ -257,16 +360,27 @@ class AsyncRFCScanner:
                 final_p = urllib.parse.urlparse(telemetry["final_url"])
                 base_url = f"{final_p.scheme}://{final_p.netloc}"
 
-            # Robots.txt probe (RFC 9309)
+            # Robots.txt probe (RFC 9309) -- full longest-match evaluation.
             try:
                 r_resp = await client.get(f"{base_url}/robots.txt")
+                exists = r_resp.status_code == 200
+                body = r_resp.text if exists else ""
+                # Per-token allow decision for the site root, per RFC 9309.
+                per_agent = {
+                    token: robots_allows(body, token, "/")
+                    for token in AI_AGENT_TOKENS
+                }
                 telemetry["robots_telemetry"] = {
                     "status": r_resp.status_code,
-                    "exists": r_resp.status_code == 200,
-                    "body_snippet": r_resp.text[:500] if r_resp.status_code == 200 else "",
-                    "allows_gptbot": "GPTBot" in r_resp.text and "Disallow: /" not in r_resp.text if r_resp.status_code == 200 else True,
-                    "allows_claudebot": "ClaudeBot" in r_resp.text and "Disallow: /" not in r_resp.text if r_resp.status_code == 200 else True,
-                    "allows_perplexity": "PerplexityBot" in r_resp.text and "Disallow: /" not in r_resp.text if r_resp.status_code == 200 else True,
+                    "exists": exists,
+                    "body_snippet": body[:500],
+                    "agents_evaluated": AI_AGENT_TOKENS,
+                    "agent_allowed": per_agent,
+                    "blocked_agents": [t for t, ok in per_agent.items() if not ok],
+                    # Back-compat keys retained for the scorer.
+                    "allows_gptbot": per_agent.get("GPTBot", True),
+                    "allows_claudebot": per_agent.get("ClaudeBot", True),
+                    "allows_perplexity": per_agent.get("PerplexityBot", True),
                 }
             except Exception as e:
                 telemetry["robots_telemetry"] = {"exists": False, "error": str(e)}
@@ -285,10 +399,15 @@ class AsyncRFCScanner:
             # /.well-known/api-catalog probe (RFC 9727)
             try:
                 api_resp = await client.get(f"{base_url}/.well-known/api-catalog")
-                is_linkset = "application/linkset+json" in api_resp.headers.get("content-type", "") or api_resp.status_code == 200
+                content_type = api_resp.headers.get("content-type", "")
+                # RFC 9727: the catalog's primary representation is
+                # application/linkset+json. Require the media type, not just a 200.
+                is_linkset = ("application/linkset+json" in content_type
+                              and api_resp.status_code == 200)
                 telemetry["api_catalog_telemetry"] = {
                     "status": api_resp.status_code,
                     "exists": api_resp.status_code == 200,
+                    "content_type": content_type,
                     "is_linkset": is_linkset
                 }
             except Exception as e:

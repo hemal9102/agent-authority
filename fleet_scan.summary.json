@@ -1,0 +1,370 @@
+{
+  "sample": {
+    "domains_attempted": 25,
+    "reachable": 24,
+    "unreachable_or_errored": 1,
+    "scored": 24,
+    "reachable_pct": 96.0
+  },
+  "score_distribution": {
+    "min": 10,
+    "median": 22,
+    "p90": 56,
+    "max": 86,
+    "mean": 31.4,
+    "bands": {
+      "agent_native_80_100": 1,
+      "partial_50_79": 5,
+      "agent_blind_0_49": 18
+    }
+  },
+  "per_check_pass_rates": [
+    {
+      "rfc_ref": "RFC 8288",
+      "title": "Context Manifest Exists but Lacks RFC 8288 Header",
+      "pillar": "discoverability",
+      "pass": 0,
+      "warn": 5,
+      "fail": 0,
+      "total": 5,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 8631",
+      "title": "No Service Documentation Relation Declared",
+      "pillar": "discoverability",
+      "pass": 0,
+      "warn": 22,
+      "fail": 0,
+      "total": 22,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 8288",
+      "title": "No Markdown Alternate Stream Advertised",
+      "pillar": "content_efficiency",
+      "pass": 0,
+      "warn": 0,
+      "fail": 23,
+      "total": 23,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 100.0
+    },
+    {
+      "rfc_ref": "Information Density",
+      "title": "Severe Code Bloat (>93% Wasted Tokens)",
+      "pillar": "content_efficiency",
+      "pass": 0,
+      "warn": 0,
+      "fail": 12,
+      "total": 12,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 100.0
+    },
+    {
+      "rfc_ref": "Cloudflare Content Signals (vendor convention, not an IETF/W3C standard)",
+      "title": "Missing Content-Signal Directive",
+      "pillar": "content_efficiency",
+      "pass": 0,
+      "warn": 23,
+      "fail": 0,
+      "total": 23,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9111",
+      "title": "Edge Cache MISS (Un-cached Origin Latency)",
+      "pillar": "transport",
+      "pass": 0,
+      "warn": 15,
+      "fail": 0,
+      "total": 15,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9110 §8.8",
+      "title": "High Origin Latency Penalty (TTFB > 1.2s)",
+      "pillar": "transport",
+      "pass": 0,
+      "warn": 0,
+      "fail": 13,
+      "total": 13,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 100.0
+    },
+    {
+      "rfc_ref": "RFC 8288",
+      "title": "Missing RFC 8288 Context Manifest",
+      "pillar": "discoverability",
+      "pass": 0,
+      "warn": 0,
+      "fail": 18,
+      "total": 18,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 100.0
+    },
+    {
+      "rfc_ref": "RFC 9727",
+      "title": "Missing RFC 9727 API Catalog",
+      "pillar": "discoverability",
+      "pass": 0,
+      "warn": 0,
+      "fail": 21,
+      "total": 21,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 100.0
+    },
+    {
+      "rfc_ref": "W3C JSON-LD 1.1",
+      "title": "Missing or Malformed JSON-LD",
+      "pillar": "semantic_grounding",
+      "pass": 0,
+      "warn": 0,
+      "fail": 16,
+      "total": 16,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 100.0
+    },
+    {
+      "rfc_ref": "Schema.org Ontology",
+      "title": "Unresolved Schema Context",
+      "pillar": "semantic_grounding",
+      "pass": 0,
+      "warn": 0,
+      "fail": 16,
+      "total": 16,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 100.0
+    },
+    {
+      "rfc_ref": "W3C RDF Schema",
+      "title": "Untyped Graph Nodes Detected",
+      "pillar": "semantic_grounding",
+      "pass": 0,
+      "warn": 16,
+      "fail": 0,
+      "total": 16,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 3986",
+      "title": "Missing Canonical sameAs Entity URIs",
+      "pillar": "semantic_grounding",
+      "pass": 0,
+      "warn": 17,
+      "fail": 0,
+      "total": 17,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9110 §8.8",
+      "title": "Moderate Transport Latency",
+      "pillar": "transport",
+      "pass": 0,
+      "warn": 9,
+      "fail": 0,
+      "total": 9,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "Information Density",
+      "title": "Moderate Markup Bloat Detected",
+      "pillar": "content_efficiency",
+      "pass": 0,
+      "warn": 8,
+      "fail": 0,
+      "total": 8,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9846",
+      "title": "Legacy TLS Protocol Detected",
+      "pillar": "transport",
+      "pass": 0,
+      "warn": 1,
+      "fail": 0,
+      "total": 1,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9309",
+      "title": "Robots.txt Blocks Select AI Agents",
+      "pillar": "discoverability",
+      "pass": 0,
+      "warn": 1,
+      "fail": 0,
+      "total": 1,
+      "pass_rate_pct": 0.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9309",
+      "title": "Robots Exclusion Policy Allows AI Retrievers",
+      "pillar": "discoverability",
+      "pass": 23,
+      "warn": 0,
+      "fail": 0,
+      "total": 23,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9727",
+      "title": "API Catalog Advertised (RFC 9727)",
+      "pillar": "discoverability",
+      "pass": 3,
+      "warn": 0,
+      "fail": 0,
+      "total": 3,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "W3C JSON-LD 1.1",
+      "title": "W3C JSON-LD Graph Parsed Successfully",
+      "pillar": "semantic_grounding",
+      "pass": 8,
+      "warn": 0,
+      "fail": 0,
+      "total": 8,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "Schema.org Ontology",
+      "title": "Canonical Schema.org Context Resolved",
+      "pillar": "semantic_grounding",
+      "pass": 8,
+      "warn": 0,
+      "fail": 0,
+      "total": 8,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "W3C RDF Schema",
+      "title": "Entities Explicitly Typed",
+      "pillar": "semantic_grounding",
+      "pass": 8,
+      "warn": 0,
+      "fail": 0,
+      "total": 8,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 3986",
+      "title": "Knowledge Graph sameAs Anchoring Active",
+      "pillar": "semantic_grounding",
+      "pass": 7,
+      "warn": 0,
+      "fail": 0,
+      "total": 7,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9846",
+      "title": "TLS 1.3 Negotiated (0-RTT/1-RTT)",
+      "pillar": "transport",
+      "pass": 23,
+      "warn": 0,
+      "fail": 0,
+      "total": 23,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9111",
+      "title": "Edge Cache HIT Active (RFC 9111)",
+      "pillar": "transport",
+      "pass": 9,
+      "warn": 0,
+      "fail": 0,
+      "total": 9,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "Information Density",
+      "title": "High Text-to-Markup Density Ratio",
+      "pillar": "content_efficiency",
+      "pass": 4,
+      "warn": 0,
+      "fail": 0,
+      "total": 4,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 8631",
+      "title": "Service Documentation Link Declared (RFC 8631)",
+      "pillar": "discoverability",
+      "pass": 2,
+      "warn": 0,
+      "fail": 0,
+      "total": 2,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 9110 §8.8",
+      "title": "Ultra-Low Socket Latency (TTFB < 450ms)",
+      "pillar": "transport",
+      "pass": 2,
+      "warn": 0,
+      "fail": 0,
+      "total": 2,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 8288",
+      "title": "Context Manifest Advertised via RFC 8288",
+      "pillar": "discoverability",
+      "pass": 1,
+      "warn": 0,
+      "fail": 0,
+      "total": 1,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "RFC 8288",
+      "title": "Markdown Alternate Representation Advertised",
+      "pillar": "content_efficiency",
+      "pass": 1,
+      "warn": 0,
+      "fail": 0,
+      "total": 1,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    },
+    {
+      "rfc_ref": "Cloudflare Content Signals (vendor convention, not an IETF/W3C standard)",
+      "title": "Content-Signal AI Directive Declared",
+      "pillar": "content_efficiency",
+      "pass": 1,
+      "warn": 0,
+      "fail": 0,
+      "total": 1,
+      "pass_rate_pct": 100.0,
+      "fail_rate_pct": 0.0
+    }
+  ],
+  "run": {
+    "domains_file": "sample_domains.txt",
+    "concurrency": 10,
+    "timeout_s": 10.0,
+    "wall_clock_s": 9.1
+  }
+}

@@ -263,9 +263,9 @@ def score_telemetry(t: Dict[str, Any]) -> Dict[str, Any]:
             "pillar": "content_efficiency",
             "status": "PASS",
             "title": "Markdown Alternate Representation Advertised",
-            "rfc_ref": "RFC 7763 / RFC 8288",
-            "rfc_url": "https://www.rfc-editor.org/rfc/rfc7763",
-            "observation": "Link: </md/index.md>; rel=\"alternate\"; type=\"text/markdown\" active.",
+            "rfc_ref": "RFC 8288",
+            "rfc_url": "https://www.rfc-editor.org/rfc/rfc8288",
+            "observation": "Advertised via RFC 8288 Link rel=\"alternate\" with the text/markdown media type (registered by RFC 7763, Informational).",
             "fix_snippet": "Link: </md/index.md>; rel=\"alternate\"; type=\"text/markdown\""
         })
     else:
@@ -273,9 +273,9 @@ def score_telemetry(t: Dict[str, Any]) -> Dict[str, Any]:
             "pillar": "content_efficiency",
             "status": "FAIL",
             "title": "No Markdown Alternate Stream Advertised",
-            "rfc_ref": "RFC 7763 / RFC 8288",
-            "rfc_url": "https://www.rfc-editor.org/rfc/rfc7763",
-            "observation": "Autonomous agents must ingest heavy HTML/JS bundles. Token overhead elevated.",
+            "rfc_ref": "RFC 8288",
+            "rfc_url": "https://www.rfc-editor.org/rfc/rfc8288",
+            "observation": "No RFC 8288 Link rel=\"alternate\" advertising a text/markdown representation (media type per RFC 7763). Agents must ingest heavy HTML/JS bundles; token overhead elevated.",
             "fix_snippet": "Link: </index.md>; rel=\"alternate\"; type=\"text/markdown\""
         })
 
@@ -321,9 +321,9 @@ def score_telemetry(t: Dict[str, Any]) -> Dict[str, Any]:
             "pillar": "content_efficiency",
             "status": "PASS",
             "title": "Content-Signal AI Directive Declared",
-            "rfc_ref": "Content-Signal Spec",
+            "rfc_ref": "Cloudflare Content Signals (vendor convention, not an IETF/W3C standard)",
             "rfc_url": "https://blog.cloudflare.com/content-independence-day-ai-options/",
-            "observation": f"Header declared: {headers['content-signal']}",
+            "observation": f"Header declared: {headers['content-signal']}. Scored as an observational bonus only; this is a vendor convention, not a standard.",
             "fix_snippet": "Content-Signal: ai-train=no, search=yes, ai-input=yes"
         })
     else:
@@ -331,9 +331,9 @@ def score_telemetry(t: Dict[str, Any]) -> Dict[str, Any]:
             "pillar": "content_efficiency",
             "status": "WARN",
             "title": "Missing Content-Signal Directive",
-            "rfc_ref": "Content-Signal Spec",
+            "rfc_ref": "Cloudflare Content Signals (vendor convention, not an IETF/W3C standard)",
             "rfc_url": "https://blog.cloudflare.com/content-independence-day-ai-options/",
-            "observation": "No explicit AI crawler permission directives declared.",
+            "observation": "No Content-Signal directive declared. This is a vendor convention, not a standard; its absence is not a standards non-conformance.",
             "fix_snippet": "Content-Signal: ai-train=no, search=yes, ai-input=yes"
         })
 
@@ -345,16 +345,16 @@ def score_telemetry(t: Dict[str, Any]) -> Dict[str, Any]:
     ttfb = t.get("ttfb_ms", 9999)
     cache_status = headers.get("cf-cache-status", headers.get("x-cache", "")).upper()
 
-    # 4.1 RFC 8446 TLS 1.3
+    # 4.1 TLS 1.3 (RFC 9846, which obsoletes RFC 8446)
     if ssl_info.get("is_tls_13"):
         p4_points += 35
         ledger.append({
             "pillar": "transport",
             "status": "PASS",
-            "title": "RFC 8446 TLS 1.3 Negotiated (0-RTT/1-RTT)",
-            "rfc_ref": "RFC 8446",
-            "rfc_url": "https://www.rfc-editor.org/rfc/rfc8446",
-            "observation": f"Negotiated {ssl_info.get('tls_version')} in {ssl_info.get('handshake_ms')}ms.",
+            "title": "TLS 1.3 Negotiated (0-RTT/1-RTT)",
+            "rfc_ref": "RFC 9846",
+            "rfc_url": "https://www.rfc-editor.org/rfc/rfc9846",
+            "observation": f"Negotiated {ssl_info.get('tls_version')} in {ssl_info.get('handshake_ms')}ms. TLS 1.3 is specified by RFC 9846 (obsoletes RFC 8446).",
             "fix_snippet": "Enable TLS 1.3 on edge CDN / Nginx ssl_protocols TLSv1.3;"
         })
     else:
@@ -362,9 +362,9 @@ def score_telemetry(t: Dict[str, Any]) -> Dict[str, Any]:
             "pillar": "transport",
             "status": "WARN",
             "title": "Legacy TLS Protocol Detected",
-            "rfc_ref": "RFC 8446",
-            "rfc_url": "https://www.rfc-editor.org/rfc/rfc8446",
-            "observation": f"Negotiated {ssl_info.get('tls_version') or 'Unknown'}. TLS 1.3 recommended.",
+            "rfc_ref": "RFC 9846",
+            "rfc_url": "https://www.rfc-editor.org/rfc/rfc9846",
+            "observation": f"Negotiated {ssl_info.get('tls_version') or 'Unknown'}. TLS 1.3 (RFC 9846) recommended.",
             "fix_snippet": "ssl_protocols TLSv1.3 TLSv1.2;"
         })
 
